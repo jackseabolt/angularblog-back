@@ -16,7 +16,8 @@ app.use(function(req, res, next) {
 app.get('/posts', (req, res) => {
     Post.find({})
         .then(posts => {
-            return res.status(200).json( posts )
+            let postsArray = posts.map(post => post.apiRepr())
+            return res.status(200).json( postsArray )
         })
 }); 
 
