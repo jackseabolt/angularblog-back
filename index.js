@@ -36,15 +36,15 @@ app.post('/posts', jsonParser, (req, res) => {
 
 app.put('/posts/:id', jsonParser, (req, res) => {
     let id = req.params.id;
-    Post.find({ id })
+    Post.findById( id )
         .then(post => {
             if(!post) {
                 return res.status(422).json({ message: 'Post not found' }); 
             }
-            return Post.findByIdAndUpdate(id, { checked: !post.checked })
+            return Post.findByIdAndUpdate(id, { "checked": !post.checked })
             })
             .then(post => {
-                return res.status(204).json(post.apiRepr())
+                return res.status(202).json(post.apiRepr())
             })
             .catch(err => {
                 if(err) {
