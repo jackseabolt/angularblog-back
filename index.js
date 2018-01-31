@@ -34,23 +34,27 @@ app.post('/posts', jsonParser, (req, res) => {
         });
 }); 
 
-app.put('posts/:id', (req, res) => {
-    let id = req.params.id; 
-    let { checked } = req.body; 
-    return Post.update({ checked })
+app.put('/posts/:id', jsonParser, (req, res) => {
+    let id = req.params.id;
+    Post.find({ id })
         .then(post => {
-            return res.status(204).json(post.apiRepr())
-        })
-        .catch(err => {
-            if(err) {
-                return res.status(500).json({ message: "There was a problem"}) 
+            if(!post) {
+                return res.status(422).json({ message: 'Post not found' }); 
             }
-        });
+            return Post.findByIdAndUpdate(id, { checked: !post.checked })
+            })
+            .then(post => {
+                return res.status(204).json(post.apiRepr())
+            })
+            .catch(err => {
+                if(err) {
+                    return res.status(500).json({ message: "There was a problem"}) 
+                }
+            });
 }); 
 
 app.delete('/posts/:id', jsonParser, (req, res) => {
     let id = req.params.id; 
-    console.log(id, "THESE ARE THE PARAMS RECIEVED")
     Post
         .find({ id })
         .then(post => {
