@@ -1,13 +1,15 @@
 const mongoose = require('mongoose'); 
 
 const PostSchema = mongoose.Schema({
-    title: { type: String, required: true}
+    title: { type: String, required: true}, 
+    checked: { type: Boolean, required: true}
 }); 
 
 PostSchema.methods.apiRepr = function(){
     return { 
         id: this._id, 
-        title: this.title
+        title: this.title, 
+        checked: this.checked
     }
 }
 

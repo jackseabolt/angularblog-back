@@ -23,7 +23,7 @@ app.get('/posts', (req, res) => {
 
 app.post('/posts', jsonParser, (req, res) => {
     let { title } = req.body; 
-    return Post.create({ title })
+    return Post.create({ title, checked: false })
         .then(post => {
             return res.status(201).json(post.apiRepr());
         })
@@ -34,9 +34,27 @@ app.post('/posts', jsonParser, (req, res) => {
         });
 }); 
 
+app.put('/posts/:id', jsonParser, (req, res) => {
+    let id = req.params.id;
+    Post.find({ id })
+        .then(post => {
+            if(!post) {
+                return res.status(422).json({ message: 'Post not found' }); 
+            }
+            return Post.findByIdAndUpdate(id, { checked: !post.checked })
+            })
+            .then(post => {
+                return res.status(204).json(post.apiRepr())
+            })
+            .catch(err => {
+                if(err) {
+                    return res.status(500).json({ message: "There was a problem"}) 
+                }
+            });
+}); 
+
 app.delete('/posts/:id', jsonParser, (req, res) => {
-    let id = req.params.id
-    console.log(id, "THESE ARE THE PARAMS RECIEVED")
+    let id = req.params.id; 
     Post
         .find({ id })
         .then(post => {
