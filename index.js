@@ -39,12 +39,16 @@ app.put('/posts/:id', jsonParser, (req, res) => {
     Post.findById( id )
         .then(post => {
             if(!post) {
-                return res.status(422).json({ message: 'Post not found' }); 
+                return res.status(404).json({ message: 'Post not found' }); 
             }
-            return Post.findByIdAndUpdate(id, { "checked": !post.checked })
+            console.log("ID", id)
+            console.log("ORIGINAL", post.checked)
+            console.log("NEW", !post.checked)
+            return Post.findByIdAndUpdate(id, { "checked": !post.checked }, {"new":true})
             })
-            .then(post => {
-                return res.status(202).json(post.apiRepr())
+            .then(result => {
+                console.log("RESULT", result.checked)
+                return res.status(202).json(result.apiRepr())
             })
             .catch(err => {
                 if(err) {
@@ -59,7 +63,7 @@ app.delete('/posts/:id', jsonParser, (req, res) => {
         .find({ id })
         .then(post => {
             if(!post) {
-                return res.status(422).json({ message: 'Post not found'})
+                return res.status(404).json({ message: 'Post not found'})
             }
             return Post.findByIdAndRemove({ _id: id })
         })
