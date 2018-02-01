@@ -56,11 +56,12 @@ app.put('/posts/:id', jsonParser, (req, res) => {
 app.delete('/posts/:id', jsonParser, (req, res) => {
     let id = req.params.id; 
     Post
-        .find({ id })
+        .findById( id )
         .then(post => {
             if(!post) {
                 return res.status(404).json({ message: 'Post not found'})
             }
+            console.log("INVISIBLE POST", post)
             return Post.findByIdAndRemove({ _id: id })
         })
         .then(() => {
@@ -68,6 +69,7 @@ app.delete('/posts/:id', jsonParser, (req, res) => {
         })
         .catch(err => {
             console.error(err)
+            return res.sendStatus(404)
         });
 }); 
 
