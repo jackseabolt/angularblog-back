@@ -41,13 +41,9 @@ app.put('/posts/:id', jsonParser, (req, res) => {
             if(!post) {
                 return res.status(404).json({ message: 'Post not found' }); 
             }
-            console.log("ID", id)
-            console.log("ORIGINAL", post.checked)
-            console.log("NEW", !post.checked)
             return Post.findByIdAndUpdate(id, { "checked": !post.checked }, {"new":true})
             })
             .then(result => {
-                console.log("RESULT", result.checked)
                 return res.status(202).json(result.apiRepr())
             })
             .catch(err => {
